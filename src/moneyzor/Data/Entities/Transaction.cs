@@ -19,14 +19,14 @@ namespace moneyzor.Entities
         public DateTime Date { get; set; } = DateTime.UtcNow;
 
         [Required]
-        [ForeignKey("CategoryId")]
         public int CategoryId { get; set; }
+        public TransactionCategory Category { get; set; } = new();
 
         [Required]
-        public TransactionType Type { get; set; }
+        public TransactionType Type { get; set; } = TransactionType.None;
 
         [Required]
-        [ForeignKey("AccountId")]
-        public Guid AccountId { get; set; } = Guid.Empty;
+        public Guid AccountId { get; set; }
+        public Account Account { get; set; } = new();
     }
 }

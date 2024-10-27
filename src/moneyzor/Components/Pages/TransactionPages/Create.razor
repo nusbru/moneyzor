@@ -6,8 +6,6 @@
 
 <PageTitle>Create</PageTitle>
 
-<h1>Create</h1>
-
 <h2>Transaction</h2>
 <hr />
 <div class="row">
@@ -25,19 +23,25 @@
                 <InputNumber id="amount" @bind-Value="Transaction.Amount" class="form-control" />
                 <ValidationMessage For="() => Transaction.Amount" class="text-danger" />
             </div>
+
             <div class="mb-3">
-                <label for="date" class="form-label">Date:</label>
-                <InputDate id="date" @bind-Value="Transaction.Date" class="form-control" />
-                <ValidationMessage For="() => Transaction.Date" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="categoryid" class="form-label">CategoryId:</label>
-                <InputNumber id="categoryid" @bind-Value="Transaction.CategoryId" class="form-control" />
+                <label for="category" class="form-label">Category:</label>
+                <InputSelect id="category" @bind-Value="Transaction.Category" class="form-control">
+                    @foreach (var category in TransactionCategories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </InputSelect>
                 <ValidationMessage For="() => Transaction.CategoryId" class="text-danger" />
             </div>
             <div class="mb-3">
                 <label for="type" class="form-label">Type:</label>
-                <InputSelect id="type" @bind-Value=" Transaction.Type" class="form-control" />
+                <InputSelect id="type" @bind-Value="Transaction.Type" class="form-control">
+                    @foreach (var type in Enum.GetValues<TransactionType>())
+                    {
+                        <option value="@type">@type</option>
+                    }
+                </InputSelect>
                 <ValidationMessage For="() => Transaction.Type" class="text-danger" />
             </div>
             <button type="submit" class="btn btn-primary">Create</button>
@@ -52,6 +56,7 @@
 @code {
     [SupplyParameterFromForm]
     private Transaction Transaction { get; set; } = new();
+    private List<TransactionCategory> TransactionCategories { get; set; } = new();
 
     private async Task AddTransaction()
     {
@@ -60,4 +65,11 @@
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/transactions");
     }
+
+    override protected void OnInitialized()
+    {
+        using var context = DbFactory.CreateDbContext();
+        TransactionCategories = context.TransactionCategory.ToList();
+    }
+
 }
