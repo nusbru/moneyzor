@@ -1,0 +1,36 @@
+@page "/transactioncategories"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using moneyzor.Entities
+@using moneyzor.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<moneyzor.Data.ApplicationDbContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="transactioncategories/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.TransactionCategory">
+    <PropertyColumn Property="transactioncategory => transactioncategory.Name" />
+
+    <TemplateColumn Context="transactioncategory">
+        <a href="@($"transactioncategories/edit?id={transactioncategory.Id}")">Edit</a> |
+        <a href="@($"transactioncategories/details?id={transactioncategory.Id}")">Details</a> |
+        <a href="@($"transactioncategories/delete?id={transactioncategory.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private ApplicationDbContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

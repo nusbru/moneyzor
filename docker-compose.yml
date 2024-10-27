@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .  # Diretório atual onde está seu Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+
+  db:
+    image: 'postgres:latest'
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: moneyzor
+      POSTGRES_PASSWORD: moneyzor_pwd
+      POSTGRES_DB: moneyzordb
+    volumes:
+      - /home/bruno/Projects/moneyzor/db-data/:/var/lib/postgresql/data/
+    networks:
+      - moneyzor-network
+
+networks: 
+  moneyzor-network:
+    driver: bridge 
